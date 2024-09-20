@@ -42,6 +42,8 @@ import com.invirgance.virge.tool.Tool;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashMap;
@@ -69,6 +71,35 @@ public class Virge
         
         System.exit(code);
     }
+    
+    private static void print(String[] lines, PrintStream out)
+    {
+        for(String line : lines)
+        {
+            out.println(line);
+        }
+    }
+    
+    public static void printHelp(Tool selected)
+    {
+        System.out.println();
+        System.out.println("Usage: java -jar virge.jar <command>");
+        System.out.println();
+        System.out.println("Commands:");
+        System.out.println();
+        
+        if(selected != null)
+        {
+            print(selected.getHelp(), System.out);
+        }
+        else
+        {
+            for(Tool tool : tools) print(tool.getHelp(), System.out);
+        }
+        
+        System.out.println();
+        System.exit(1);
+    }
 
     public static void main(String[] args) throws Exception
     {
@@ -77,10 +108,16 @@ public class Virge
         // TODO: Need to print help text
         if(args.length < 1) exit(5, "Need to specify tool");
         
+        if(args[0].equals("--help") || args[0].equals("-h") || args[0].equals("-?"))
+        {
+            printHelp(null);
+        }
+        
         tool = lookup.get(args[0]);
         
         if(tool == null) exit(6, "Unknown tool: " + args[0]);
-        if(!tool.parse(args, 1)) exit(7, "Incorrect parameters for tool " + args[0]); // TODO: Need to print help text
+        
+        if(!tool.parse(args, 1)) printHelp(tool);
         
         tool.execute();
     }

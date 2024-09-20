@@ -29,6 +29,8 @@ public interface Tool
 {
     public String getName();
     
+    public String[] getHelp();
+    
     /**
      * Parses the command line arguments and returns 
      * 

@@ -37,7 +37,9 @@ import com.invirgance.convirgance.source.Source;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.target.OutputStreamTarget;
 import com.invirgance.convirgance.target.Target;
+
 import static com.invirgance.virge.Virge.exit;
+
 import com.invirgance.virge.tool.Tool;
 import java.io.File;
 import java.io.IOException;
@@ -235,6 +237,43 @@ public class Copy implements Tool
     }
 
     @Override
+    public String[] getHelp()
+    {
+        return new String[] {
+            "copy [options] <source> <target>",
+            "    Copy a file while performing a tranformation between formats as required",
+            "",
+            "    --input <format>",
+            "    -i <format>",
+            "        Specify the format of the input file. Currently supported options are json, csv, tsv, pipe, delimited, and bson",
+            "",
+            "    --output <format>",
+            "    -o <format>",
+            "         Specify the format of the output file. Currently supported options are json, csv, tsv, pipe, delimited, and bson",
+            "",
+            "    --bson-compress",
+            "    -z",
+            "         Enable compression when writing a bson file",
+            "",
+            "    --input-delimiter <delimiter>",
+            "    -D <delimiter>",
+            "         Set the column delimiter if the source is a delimited file (e.g. , or |)",
+            "",
+            "    --output-delimiter <delimiter>",
+            "    -d <delimiter>",
+            "         Set the column delimiter if the target is a delimited file (e.g. , or |)",
+            "",
+            "    --source <file path>",
+            "    -s <file path>",
+            "         Alternate method of specifying the source file",
+            "",
+            "    --target",
+            "    -t <file path>",
+            "         Alternate method of specifying the target file",
+        };
+    }
+
+    @Override
     public boolean parse(String[] args, int start) throws MalformedURLException, IOException
     {
         for(int i=start; i<args.length; i++)
@@ -249,6 +288,11 @@ public class Copy implements Tool
             
             switch(args[i])
             {
+                case "--help":
+                case "-h":
+                case "-?":
+                    return false;
+                
                 case "--bson-compress":
                 case "-z":
                     bsonCompress = true;
@@ -339,10 +383,10 @@ public class Copy implements Tool
     @Override
     public void execute()
     {
-        if(source == null) Virge.exit(1, "No source specified!");
-        if(input == null) Virge.exit(2, "No input type specified and unable to autodetect");
-        if(target == null) Virge.exit(3, "No target specified!");
-        if(output == null) Virge.exit(4, "No output type specified and unable to autodetect");
+        if(source == null) Virge.exit(254, "No source specified!");
+        if(input == null) Virge.exit(254, "No input type specified and unable to autodetect");
+        if(target == null) Virge.exit(254, "No target specified!");
+        if(output == null) Virge.exit(254, "No output type specified and unable to autodetect");
         
         output.write(target, input.read(source));
     }
