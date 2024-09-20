@@ -100,13 +100,29 @@ public class Virge
         System.out.println();
         System.exit(1);
     }
+    
+    public static void printShortHelp()
+    {
+        
+        System.out.println();
+        System.out.println("Usage: java -jar virge.jar <command>");
+        System.out.println();
+        System.out.println("Commands:");
+        System.out.println();
+        
+        
+        for(Tool tool : tools) System.out.println("    " + tool.getHelp()[0]);
+        
+        System.out.println();
+        System.exit(1);
+    }
 
     public static void main(String[] args) throws Exception
     {
         Tool tool;
         
         // TODO: Need to print help text
-        if(args.length < 1) exit(5, "Need to specify tool");
+        if(args.length < 1) printShortHelp();
         
         if(args[0].equals("--help") || args[0].equals("-h") || args[0].equals("-?"))
         {
