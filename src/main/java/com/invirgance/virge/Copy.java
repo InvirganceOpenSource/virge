@@ -104,11 +104,30 @@ public class Copy implements Tool
         this.output = output;
     }
     
+    private boolean isURL(String path)
+    {
+        char c;
+        
+        if(!path.contains(":/")) return false;
+        if(path.charAt(0) == ':') return false;
+        
+        for(int i=0; i<path.length(); i++)
+        {
+            c = path.charAt(i);
+            
+            if(c == ':') return (path.charAt(i+1) == '/');
+                
+            if(!Character.isLetter(c)) return false;
+        }
+        
+        return false;
+    }
+    
     private Source getSource(String path) throws MalformedURLException, IOException
     {
         File file;
         
-        if(path.startsWith("file://"))
+        if(isURL(path))
         {
             return new InputStreamSource(URI.create(path).toURL().openStream());
         }
@@ -123,7 +142,7 @@ public class Copy implements Tool
     // TODO: Improve auto-detection
     private Input<JSONObject> detectInput(String path) throws MalformedURLException
     {
-        if(path.startsWith("file://"))
+        if(isURL(path))
         {
             path = URI.create(path).toURL().getFile();
         }
@@ -172,7 +191,7 @@ public class Copy implements Tool
     {
         File file;
         
-        if(path.startsWith("file://"))
+        if(isURL(path))
         {
             return new OutputStreamTarget(URI.create(path).toURL().openConnection().getOutputStream());
         }
@@ -187,7 +206,7 @@ public class Copy implements Tool
     // TODO: Should the default be symetrical input/output?
     private Output detectOutput(String path) throws MalformedURLException
     {
-        if(path.startsWith("file://"))
+        if(isURL(path))
         {
             path = URI.create(path).toURL().getFile();
         }
