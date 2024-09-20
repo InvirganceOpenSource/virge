@@ -37,6 +37,7 @@ import com.invirgance.convirgance.source.Source;
 import com.invirgance.convirgance.target.FileTarget;
 import com.invirgance.convirgance.target.OutputStreamTarget;
 import com.invirgance.convirgance.target.Target;
+import com.invirgance.convirgance.transform.CoerceStringsTransformer;
 
 import static com.invirgance.virge.Virge.exit;
 
@@ -61,6 +62,7 @@ public class Copy implements Tool
     private char inputDelimiter;
     private char outputDelimiter;
     private boolean bsonCompress;
+    private boolean detectTypes;
 
     public Source getSource()
     {
@@ -263,6 +265,10 @@ public class Copy implements Tool
             "    -d <delimiter>",
             "         Set the column delimiter if the target is a delimited file (e.g. , or |)",
             "",
+            "    --detect-types",
+            "    -I",
+            "         Attempts to automatically coerce strings in the input records into numbers and booleans. Useful for delimited file inputs or where type information was lost.",
+            "",
             "    --source <file path>",
             "    -s <file path>",
             "         Alternate method of specifying the source file",
@@ -273,6 +279,13 @@ public class Copy implements Tool
         };
     }
 
+    private boolean error(String message)
+    {
+        System.err.println(message);
+        
+        return false;
+    }
+    
     @Override
     public boolean parse(String[] args, int start) throws MalformedURLException, IOException
     {
@@ -347,6 +360,11 @@ public class Copy implements Tool
                     
                     break;
                     
+                case "--detect-types":
+                case "-I":
+                    detectTypes = true;
+                    break;
+                    
                 default:
                     
                     if(source == null)
@@ -372,10 +390,10 @@ public class Copy implements Tool
             }
         }
         
-        if(source == null) return false;
-        if(input == null) return false;
-        if(target == null) return false;
-        if(output == null) return false;
+        if(source == null) return error("No source specified!");
+        if(input == null) return error("No input type specified and unable to autodetect");
+        if(target == null) return error("No target specified!");
+        if(output == null) return error("No output type specified and unable to autodetect");
         
         return true;
     }
@@ -383,11 +401,17 @@ public class Copy implements Tool
     @Override
     public void execute()
     {
+        Iterable<JSONObject> iterable;
+        
         if(source == null) Virge.exit(254, "No source specified!");
         if(input == null) Virge.exit(254, "No input type specified and unable to autodetect");
         if(target == null) Virge.exit(254, "No target specified!");
         if(output == null) Virge.exit(254, "No output type specified and unable to autodetect");
         
-        output.write(target, input.read(source));
+        iterable = input.read(source);
+        
+        if(detectTypes) iterable = new CoerceStringsTransformer().transform(iterable);
+        
+        output.write(target, iterable);
     }
 }

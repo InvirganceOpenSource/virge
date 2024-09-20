@@ -22,30 +22,9 @@ SOFTWARE.
 
 package com.invirgance.virge;
 
-import com.invirgance.convirgance.ConvirganceException;
-import com.invirgance.convirgance.input.BSONInput;
-import com.invirgance.convirgance.input.DelimitedInput;
-import com.invirgance.convirgance.input.Input;
-import com.invirgance.convirgance.input.JSONInput;
-import com.invirgance.convirgance.json.JSONObject;
-import com.invirgance.convirgance.output.BSONOutput;
-import com.invirgance.convirgance.output.DelimitedOutput;
-import com.invirgance.convirgance.output.JSONOutput;
-import com.invirgance.convirgance.output.Output;
-import com.invirgance.convirgance.source.FileSource;
-import com.invirgance.convirgance.source.InputStreamSource;
-import com.invirgance.convirgance.source.Source;
-import com.invirgance.convirgance.target.FileTarget;
-import com.invirgance.convirgance.target.OutputStreamTarget;
-import com.invirgance.convirgance.target.Target;
 import com.invirgance.virge.tool.Tool;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
