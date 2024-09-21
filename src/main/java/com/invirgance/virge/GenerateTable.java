@@ -422,8 +422,8 @@ public class GenerateTable implements Tool
         private int getScale()
         {
             long scale = (long)Math.max(Math.abs(smallestDouble), Math.abs(largestDouble));
-            
-            return Math.max(getPrecision() - Long.toString(scale).length(), 8);
+
+            return Math.min(getPrecision() - Long.toString(scale).length(), 8);
         }
         
         private String getIntegerType()
