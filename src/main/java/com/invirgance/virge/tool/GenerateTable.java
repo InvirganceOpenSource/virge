@@ -223,11 +223,9 @@ public class GenerateTable implements Tool
         return true;
     }
 
-    private String normalizeColumn(String name)
+    private String normalizeObjectName(String name)
     {
-        if(name.equalsIgnoreCase("size")) return "\"" + name + "\"";
-        
-        return name;
+        return "\"" + name + "\"";
     }
     
     @Override
@@ -273,7 +271,7 @@ public class GenerateTable implements Tool
             if(index++ > 0) sql.append(",\n");
             
             sql.append("    ");
-            sql.append(normalizeColumn(column.name));
+            sql.append(normalizeObjectName(column.name));
             sql.append(" ");
             sql.append(column.getType());
             

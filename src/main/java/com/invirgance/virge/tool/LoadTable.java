@@ -276,12 +276,10 @@ public class LoadTable implements Tool
         
         return true;
     }
-
-    private String normalizeColumn(String name)
+    
+    private String normalizeObjectName(String name)
     {
-        if(name.equalsIgnoreCase("size")) return "\"" + name + "\"";
-        
-        return name;
+        return "\"" + name + "\"";
     }
     
     private Query getInsertQuery() throws Exception
@@ -307,7 +305,7 @@ public class LoadTable implements Tool
             if(index > 0) sql.append(",\n");
             
             sql.append("    ");
-            sql.append(normalizeColumn(key));
+            sql.append(normalizeObjectName(key));
             
             index++;
         }
