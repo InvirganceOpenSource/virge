@@ -36,7 +36,8 @@ public class Virge
 {
     public static final Tool[] tools = new Tool[] {
         new Copy(),
-        new GenerateTable()
+        new GenerateTable(),
+        new LoadTable()
     }; 
     
     public static final Map<String,Tool> lookup = new HashMap<>();

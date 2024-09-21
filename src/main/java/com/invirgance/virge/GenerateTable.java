@@ -31,18 +31,18 @@ import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.convirgance.source.InputStreamSource;
 import com.invirgance.convirgance.source.Source;
 import com.invirgance.convirgance.transform.CoerceStringsTransformer;
+
 import static com.invirgance.virge.Virge.exit;
+
 import com.invirgance.virge.tool.Tool;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.Map;
 
 /**
  *
@@ -76,7 +76,6 @@ public class GenerateTable implements Tool
     {
         this.input = input;
     }
-    
     
     private boolean isURL(String path)
     {
@@ -161,13 +160,9 @@ public class GenerateTable implements Tool
             "    -D <delimiter>",
             "         Set the column delimiter if the source is a delimited file (e.g. , or |)",
             "",
-            "    --detect-types",
-            "    -I",
-            "         Attempts to automatically coerce strings in the input records into numbers and booleans. Useful for delimited file inputs or where type information was lost.",
-            "",
             "    --source <file path>",
             "    -s <file path>",
-            "         Alternate method of specifying the source file",
+            "         Alternate method of specifying the source file"
         };
     }
 
@@ -229,6 +224,13 @@ public class GenerateTable implements Tool
         return true;
     }
 
+    private String normalizeColumn(String name)
+    {
+        if(name.equalsIgnoreCase("size")) return "\"" + name + "\"";
+        
+        return name;
+    }
+    
     @Override
     public void execute() throws Exception
     {
@@ -272,7 +274,7 @@ public class GenerateTable implements Tool
             if(index++ > 0) sql.append(",\n");
             
             sql.append("    ");
-            sql.append(column.name);
+            sql.append(normalizeColumn(column.name));
             sql.append(" ");
             sql.append(column.getType());
             
@@ -382,6 +384,7 @@ public class GenerateTable implements Tool
         {
             long tempLong;
             double tempDouble;
+            byte[] tempBytes;
             
             if(value == null || value.equals(""))
             {
@@ -409,7 +412,9 @@ public class GenerateTable implements Tool
                 if(tempDouble > largestDouble) largestDouble = tempDouble;
             }
             
-            if(value.toString().length() > length) length = value.toString().length();
+            tempBytes = value.toString().getBytes();
+            
+            if(tempBytes.length > length) length = tempBytes.length;
         }
         
         private int getPrecision()
