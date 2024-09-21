@@ -35,7 +35,8 @@ import java.util.Map;
 public class Virge
 {
     public static final Tool[] tools = new Tool[] {
-        new Copy()
+        new Copy(),
+        new GenerateTable()
     }; 
     
     public static final Map<String,Tool> lookup = new HashMap<>();
