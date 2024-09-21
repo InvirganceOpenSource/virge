@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
  */
-package com.invirgance.virge;
+package com.invirgance.virge.tool;
 
 import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.input.BSONInput;
@@ -31,6 +31,7 @@ import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.convirgance.source.InputStreamSource;
 import com.invirgance.convirgance.source.Source;
 import com.invirgance.convirgance.transform.CoerceStringsTransformer;
+import com.invirgance.virge.Virge;
 
 import static com.invirgance.virge.Virge.exit;
 

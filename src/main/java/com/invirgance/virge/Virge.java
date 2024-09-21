@@ -22,6 +22,9 @@ SOFTWARE.
 
 package com.invirgance.virge;
 
+import com.invirgance.virge.tool.Copy;
+import com.invirgance.virge.tool.GenerateTable;
+import com.invirgance.virge.tool.LoadTable;
 import com.invirgance.virge.tool.Tool;
 
 import java.io.PrintStream;
@@ -59,6 +62,9 @@ public class Virge
         {
             out.println(line);
         }
+        
+        out.println();
+        out.println();
     }
     
     public static void printHelp(Tool selected)
@@ -78,7 +84,6 @@ public class Virge
             for(Tool tool : tools) print(tool.getHelp(), System.out);
         }
         
-        System.out.println();
         System.exit(1);
     }
     
