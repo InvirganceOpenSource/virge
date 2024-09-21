@@ -33,8 +33,6 @@ import com.invirgance.virge.Virge;
 
 import static com.invirgance.virge.Virge.exit;
 
-import com.invirgance.virge.tool.Tool;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
