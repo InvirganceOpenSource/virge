@@ -6,6 +6,26 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Virge</name>
+    <licenses>
+        <license>
+          <name>MIT License</name>
+          <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Jerason Banes</name>
+            <email>jerasonbanes@invirgance.com</email>
+            <organization>Invirgance</organization>
+            <organizationUrl>http://www.invirgance.com</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:https://github.com/InvirganceOpenSource/virge.git</connection>
+        <developerConnection>scm:git:https://github.com/InvirganceOpenSource/virge.git</developerConnection>
+        <url>https://github.com/InvirganceOpenSource/virge/tree/${project.scm.tag}</url>
+        <tag>main</tag>
+    </scm>
     <build>
         <plugins>
             <plugin>
@@ -49,6 +69,16 @@
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
             <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbytools</artifactId>
+            <version>10.17.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>10.17.1.0</version>
         </dependency>
     </dependencies>
     <properties>
