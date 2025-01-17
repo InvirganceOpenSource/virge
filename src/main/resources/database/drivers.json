@@ -1,6 +1,6 @@
 [
     {
-        "name": "Oracle Database",
+        "name": "Oracle Thin Driver",
         "keys": [
             "oracle",
             "ora",
@@ -11,6 +11,19 @@
         "datasource": "oracle.jdbc.pool.OracleDataSource",
         "prefixes": [
             "jdbc:oracle:thin:"
+        ]
+    },
+    {
+        "name": "Derby Network Client",
+        "keys": [
+            "derby",
+            "javadb"
+        ],
+        "artifact": "org.apache.derby:derbytools:10.17.1.0",
+        "driver": "org.apache.derby.jdbc.ClientDriver",
+        "datasource": "com.invirgance.virge.jdbc.DriverDataSource",
+        "prefixes": [
+            "jdbc:derby:"
         ]
     }
 ]

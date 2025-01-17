@@ -96,6 +96,15 @@ public class JDBCDrivers implements Iterable<JSONObject>
         }
     }
     
+    public Driver getDriverByURL(String url)
+    {
+        JSONObject descriptor = findDescriptorByURL(url);
+        
+        if(descriptor == null) return null;
+        
+        return (Driver)getDriver(descriptor.getJSONArray("keys").getString(0));
+    }
+    
     public DataSource getDataSource(String type)
     {
         JSONObject descriptor = getDescriptor(type);
