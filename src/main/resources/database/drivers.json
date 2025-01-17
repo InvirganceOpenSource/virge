@@ -47,5 +47,22 @@
         "prefixes": [
             "jdbc:jtds:"
         ]
+    },
+    {
+        "name": "HSQLDB",
+        "keys": [
+            "hsql",
+            "hsqldb",
+            "hypersonic",
+            "hypersonicsql"
+        ],
+        "artifact": [
+            "org.hsqldb:hsqldb:2.7.4"
+        ],
+        "driver": "org.hsqldb.jdbc.JDBCDriver",
+        "datasource": "org.hsqldb.jdbc.JDBCDataSource",
+        "prefixes": [
+            "jdbc:hsqldb:"
+        ]
     }
 ]
