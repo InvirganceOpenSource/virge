@@ -248,15 +248,20 @@ public class GenerateTable implements Tool
         
         for(JSONObject record : iterable)
         {
-            if(columns == null) columns = new Column[record.size()];
-            
-            index = 0;
-            
-            for(String key : record.keySet())
+            if(columns == null) 
             {
-                if(columns[index] == null) columns[index] = new Column(key);
+                columns = new Column[record.size()];
+                index = 0;
                 
-                columns[index++].analyze(record.get(key));
+                for(String key : record.keySet())
+                {
+                    columns[index++] = new Column(key);
+                }
+            }
+            
+            for(Column column : columns)
+            {
+                column.analyze(record.get(column.name));
             }
         }
         
