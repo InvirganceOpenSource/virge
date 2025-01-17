@@ -13,6 +13,10 @@
         "datasource": "oracle.jdbc.pool.OracleDataSource",
         "prefixes": [
             "jdbc:oracle:thin:"
+        ],
+        "examples": [
+            "jdbc:oracle:thin:@[HOST][:PORT]:SID",
+            "jdbc:oracle:thin:@//[HOST][:PORT]/SERVICE"
         ]
     },
     {
@@ -29,6 +33,14 @@
         "datasource": "com.invirgance.virge.jdbc.DriverDataSource",
         "prefixes": [
             "jdbc:derby:"
+        ],
+        "examples": [
+            "jdbc:derby://<host>[/databaseName][;attribute=value]",
+            "jdbc:derby:[subsubprotocol:][databaseName][;attribute=value]",
+            "jdbc:derby:directory:[databaseName][;attribute=value]",
+            "jdbc:derby:memory:[databaseName][;attribute=value]",
+            "jdbc:derby:classpath:[databaseName][;attribute=value]",
+            "jdbc:derby:jar:<pathToArchive>/<databaseName>[;attribute=value]"
         ]
     },
     {
@@ -46,6 +58,9 @@
         "datasource": "com.invirgance.virge.jdbc.DriverDataSource",
         "prefixes": [
             "jdbc:jtds:"
+        ],
+        "examples": [
+            "jdbc:jtds:sqlserver://<server>[:<port>][/<database>][;<property>=<value>[;...]]"
         ]
     },
     {
@@ -63,6 +78,14 @@
         "datasource": "org.hsqldb.jdbc.JDBCDataSource",
         "prefixes": [
             "jdbc:hsqldb:"
+        ],
+        "examples": [
+            "jdbc:hsqldb:hsql://<serverName>[:port][/databaseName]",
+            "jdbc:hsqldb:hsqls://<serverName>[:port][/databaseName]",
+            "jdbc:hsqldb:http://<serverName>[:port][/databaseName]",
+            "jdbc:hsqldb:https://<serverName>[:port][/databaseName]",
+            "jdbc:hsqldb:file:/<directory>[;shutdown=true]",
+            "jdbc:hsqldb:res:/<jarDirectory>"
         ]
     }
 ]

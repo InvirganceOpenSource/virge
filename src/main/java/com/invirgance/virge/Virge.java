@@ -22,10 +22,7 @@ SOFTWARE.
 
 package com.invirgance.virge;
 
-import com.invirgance.virge.tool.Copy;
-import com.invirgance.virge.tool.GenerateTable;
-import com.invirgance.virge.tool.LoadTable;
-import com.invirgance.virge.tool.Tool;
+import com.invirgance.virge.tool.*;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -40,7 +37,8 @@ public class Virge
     public static final Tool[] tools = new Tool[] {
         new Copy(),
         new GenerateTable(),
-        new LoadTable()
+        new LoadTable(),
+        new SQLDrivers()
     }; 
     
     public static final Map<String,Tool> lookup = new HashMap<>();
