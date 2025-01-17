@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Oracle Database",
+        "keys": [
+            "oracle",
+            "ora",
+            "oracledb"
+        ],
+        "artifact": "com.oracle.database.jdbc:ojdbc11:23.6.0.24.10",
+        "driver": "oracle.jdbc.driver.OracleDriver",
+        "datasource": "oracle.jdbc.pool.OracleDataSource",
+        "prefixes": [
+            "jdbc:oracle:thin:"
+        ]
+    }
+]

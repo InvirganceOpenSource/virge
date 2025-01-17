@@ -32,6 +32,7 @@ import com.invirgance.convirgance.source.Source;
 import com.invirgance.virge.Virge;
 
 import static com.invirgance.virge.Virge.exit;
+import com.invirgance.virge.jdbc.JDBCDrivers;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +42,6 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 /**
@@ -249,6 +247,14 @@ public class LoadTable implements Tool
                     password = args[++i];
                     break;
                     
+                case "--source":
+                case "-s":
+                    source = getSource(args[++i]);
+                    
+                    if(input == null) input = detectInput(args[i]);
+                        
+                    break;
+                    
                 default:
                     
                     if(source == null)
@@ -334,7 +340,7 @@ public class LoadTable implements Tool
     public void execute() throws Exception
     {
         Query query = getInsertQuery();
-        DBMS dbms = new DBMS(new DataSourceWrapper());
+        DBMS dbms = new DBMS(new JDBCDrivers().getDataSource(jdbcURL, username, password));
         
         TransactionOperation transaction;
         QueryOperation truncate = new QueryOperation(new Query("truncate table " + tableName));
@@ -348,70 +354,5 @@ public class LoadTable implements Tool
         else transaction = new TransactionOperation(batch);
         
         dbms.update(transaction);
-    }
-    
-    private class DataSourceWrapper implements DataSource
-    {
-        private PrintWriter log;
-
-        public DataSourceWrapper()
-        {
-            log = new PrintWriter(System.out);
-        }
-        
-        @Override
-        public Connection getConnection() throws SQLException
-        {
-            return DriverManager.getConnection(jdbcURL, username, password);
-        }
-
-        @Override
-        public Connection getConnection(String username, String password) throws SQLException
-        {
-            return DriverManager.getConnection(jdbcURL, username, password);
-        }
-
-        @Override
-        public PrintWriter getLogWriter() throws SQLException
-        {
-            return this.log;
-        }
-
-        @Override
-        public void setLogWriter(PrintWriter out) throws SQLException
-        {
-//            this.log = out;
-        }
-
-        @Override
-        public void setLoginTimeout(int seconds) throws SQLException
-        {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        }
-
-        @Override
-        public int getLoginTimeout() throws SQLException
-        {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        }
-
-        @Override
-        public Logger getParentLogger() throws SQLFeatureNotSupportedException
-        {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        }
-
-        @Override
-        public <T> T unwrap(Class<T> iface) throws SQLException
-        {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        }
-
-        @Override
-        public boolean isWrapperFor(Class<?> iface) throws SQLException
-        {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        }
-        
     }
 }
