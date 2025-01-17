@@ -28,6 +28,7 @@ import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.source.ClasspathSource;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -44,6 +45,37 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
  */
 public class JDBCDrivers implements Iterable<JSONObject>
 {
+
+    public JDBCDrivers()
+    {
+        PrintStream err = System.err;
+        
+        // Disable unnecessary maven logging
+        if(System.getProperty("org.slf4j.simpleLogger.defaultLogLevel") == null)
+        {
+            System.getProperty("org.slf4j.simpleLogger.defaultLogLevel", "error");
+            
+            System.setErr(new PrintStream(err) {
+                private int counter;
+                
+                @Override
+                public void println(String str)
+                {
+                    if(str.startsWith("SLF4J: ") && counter < 3)
+                    {
+                        counter++;
+                        
+                        return;
+                    }
+                    
+                    super.println(str);
+                }
+                
+            });
+        }
+    }
+    
+    
     public JSONObject getDescriptor(String type)
     {
         for(JSONObject descriptor : this)
@@ -81,7 +113,7 @@ public class JDBCDrivers implements Iterable<JSONObject>
         
         if(descriptor == null) return null;
         
-        urls =  maven.withMavenCentralRepo(true).resolve(descriptor.getString("artifact")).withTransitivity().as(URL.class);
+        urls =  maven.withMavenCentralRepo(true).resolve(descriptor.getJSONArray("artifact")).withTransitivity().as(URL.class);
         loader = new URLClassLoader(urls);
         
         try
@@ -116,7 +148,7 @@ public class JDBCDrivers implements Iterable<JSONObject>
         
         if(descriptor == null) return null;
         
-        urls =  maven.withMavenCentralRepo(true).resolve(descriptor.getString("artifact")).withTransitivity().as(URL.class);
+        urls =  maven.withMavenCentralRepo(true).resolve(descriptor.getJSONArray("artifact")).withTransitivity().as(URL.class);
         loader = new URLClassLoader(urls);
         
         try

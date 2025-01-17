@@ -6,7 +6,9 @@
             "ora",
             "oracledb"
         ],
-        "artifact": "com.oracle.database.jdbc:ojdbc11:23.6.0.24.10",
+        "artifact": [
+            "com.oracle.database.jdbc:ojdbc11:23.6.0.24.10"
+        ],
         "driver": "oracle.jdbc.driver.OracleDriver",
         "datasource": "oracle.jdbc.pool.OracleDataSource",
         "prefixes": [
@@ -19,7 +21,10 @@
             "derby",
             "javadb"
         ],
-        "artifact": "org.apache.derby:derbytools:10.17.1.0",
+        "artifact": [
+            "org.apache.derby:derbytools:10.17.1.0",
+            "org.apache.derby:derbyclient:10.17.1.0"
+        ],
         "driver": "org.apache.derby.jdbc.ClientDriver",
         "datasource": "com.invirgance.virge.jdbc.DriverDataSource",
         "prefixes": [
