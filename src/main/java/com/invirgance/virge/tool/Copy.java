@@ -22,13 +22,13 @@ SOFTWARE.
 package com.invirgance.virge.tool;
 
 import com.invirgance.convirgance.ConvirganceException;
-import com.invirgance.convirgance.input.BSONInput;
 import com.invirgance.convirgance.input.DelimitedInput;
 import com.invirgance.convirgance.input.Input;
+import com.invirgance.convirgance.input.JBINInput;
 import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONObject;
-import com.invirgance.convirgance.output.BSONOutput;
 import com.invirgance.convirgance.output.DelimitedOutput;
+import com.invirgance.convirgance.output.JBINOutput;
 import com.invirgance.convirgance.output.JSONOutput;
 import com.invirgance.convirgance.output.Output;
 import com.invirgance.convirgance.source.FileSource;
@@ -39,9 +39,7 @@ import com.invirgance.convirgance.target.OutputStreamTarget;
 import com.invirgance.convirgance.target.Target;
 import com.invirgance.convirgance.transform.CoerceStringsTransformer;
 import com.invirgance.virge.Virge;
-
 import static com.invirgance.virge.Virge.exit;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -61,7 +59,7 @@ public class Copy implements Tool
     
     private char inputDelimiter;
     private char outputDelimiter;
-    private boolean bsonCompress;
+    private boolean jbinCompress;
     private boolean detectTypes;
 
     public Source getSource()
@@ -151,7 +149,7 @@ public class Copy implements Tool
         
         if(path.endsWith(".json")) return new JSONInput();
         if(path.endsWith(".csv")) return new DelimitedInput(','); // TODO: need to support proper CSV format
-        if(path.endsWith(".bson")) return new BSONInput();
+        if(path.endsWith(".jbin")) return new JBINInput();
         
         return null;
     }
@@ -175,8 +173,8 @@ public class Copy implements Tool
                 
                 return new DelimitedInput();
             
-            case "bson":
-                return new BSONInput();
+            case "jbin":
+                return new JBINInput();
                 
             case "json":
                 return new JSONInput();
@@ -215,7 +213,7 @@ public class Copy implements Tool
         
         if(path.endsWith(".json")) return new JSONOutput();
         if(path.endsWith(".csv")) return new DelimitedOutput(','); // TODO: need to support proper CSV format
-        if(path.endsWith(".bson")) return new BSONOutput(bsonCompress);
+        if(path.endsWith(".jbin")) return new JBINOutput(jbinCompress);
         
         return null;
     }
@@ -239,8 +237,8 @@ public class Copy implements Tool
                 
                 return new DelimitedOutput();
             
-            case "bson":
-                return new BSONOutput(bsonCompress);
+            case "jbin":
+                return new JBINOutput(jbinCompress);
                 
             case "json":
                 return new JSONOutput();
@@ -266,15 +264,15 @@ public class Copy implements Tool
             "",
             "    --input <format>",
             "    -i <format>",
-            "        Specify the format of the input file. Currently supported options are json, csv, tsv, pipe, delimited, and bson",
+            "        Specify the format of the input file. Currently supported options are json, csv, tsv, pipe, delimited, and jbin",
             "",
             "    --output <format>",
             "    -o <format>",
-            "         Specify the format of the output file. Currently supported options are json, csv, tsv, pipe, delimited, and bson",
+            "         Specify the format of the output file. Currently supported options are json, csv, tsv, pipe, delimited, and jbin",
             "",
-            "    --bson-compress",
+            "    --jbin-compress",
             "    -z",
-            "         Enable compression when writing a bson file",
+            "         Enable compression when writing a jbin file",
             "",
             "    --input-delimiter <delimiter>",
             "    -D <delimiter>",
@@ -325,11 +323,11 @@ public class Copy implements Tool
                 case "-?":
                     return false;
                 
-                case "--bson-compress":
+                case "--jbin-compress":
                 case "-z":
-                    bsonCompress = true;
+                    jbinCompress = true;
                     
-                    if(output instanceof BSONOutput) ((BSONOutput)output).setCompressed(bsonCompress);
+                    if(output instanceof JBINOutput) ((JBINOutput)output).setCompressed(jbinCompress);
                     
                     break;
                 

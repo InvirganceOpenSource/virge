@@ -30,19 +30,13 @@ import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.convirgance.source.InputStreamSource;
 import com.invirgance.convirgance.source.Source;
 import com.invirgance.virge.Virge;
-
 import static com.invirgance.virge.Virge.exit;
 import com.invirgance.virge.jdbc.JDBCDrivers;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import javax.sql.DataSource;
 
 /**
  *
@@ -138,7 +132,7 @@ public class LoadTable implements Tool
         
         if(path.endsWith(".json")) return new JSONInput();
         if(path.endsWith(".csv")) return new DelimitedInput(','); // TODO: need to support proper CSV format
-        if(path.endsWith(".bson")) return new BSONInput();
+        if(path.endsWith(".jbin")) return new JBINInput();
         
         return null;
     }
@@ -165,7 +159,7 @@ public class LoadTable implements Tool
             "",
             "    --input <format>",
             "    -i <format>",
-            "        Specify the format of the input file. Currently supported options are json, csv, tsv, pipe, delimited, and bson",
+            "        Specify the format of the input file. Currently supported options are json, csv, tsv, pipe, delimited, and jbin",
             "",
             "    --input-delimiter <delimiter>",
             "    -D <delimiter>",

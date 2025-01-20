@@ -11,14 +11,14 @@ Virge unlocks the power of the [Convirgance library](https://github.com/Invirgan
 
     --input or -i <format>
          Specify the format of the input file. Currently supported options are
-         json, csv, tsv, pipe, delimited, and bson
+         json, csv, tsv, pipe, delimited, and jbin
 
     --output or -o <format>
          Specify the format of the output file. Currently supported options are
-         json, csv, tsv, pipe, delimited, and bson
+         json, csv, tsv, pipe, delimited, and jbin
 
-    --bson-compress or -z
-         Enable compression when writing a bson file
+    --jbin-compress or -z
+         Enable compression when writing a jbin file
 
     --input-delimiter or -D <delimiter>
          Set the column delimiter if the source is a delimited file (e.g. , or |)

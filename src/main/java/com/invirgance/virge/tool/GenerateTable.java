@@ -22,9 +22,9 @@ SOFTWARE.
 package com.invirgance.virge.tool;
 
 import com.invirgance.convirgance.ConvirganceException;
-import com.invirgance.convirgance.input.BSONInput;
 import com.invirgance.convirgance.input.DelimitedInput;
 import com.invirgance.convirgance.input.Input;
+import com.invirgance.convirgance.input.JBINInput;
 import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.source.FileSource;
@@ -32,9 +32,7 @@ import com.invirgance.convirgance.source.InputStreamSource;
 import com.invirgance.convirgance.source.Source;
 import com.invirgance.convirgance.transform.CoerceStringsTransformer;
 import com.invirgance.virge.Virge;
-
 import static com.invirgance.virge.Virge.exit;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -133,7 +131,7 @@ public class GenerateTable implements Tool
         
         if(path.endsWith(".json")) return new JSONInput();
         if(path.endsWith(".csv")) return new DelimitedInput(','); // TODO: need to support proper CSV format
-        if(path.endsWith(".bson")) return new BSONInput();
+        if(path.endsWith(".jbin")) return new JBINInput();
         
         return null;
     }
@@ -153,7 +151,7 @@ public class GenerateTable implements Tool
             "",
             "    --input <format>",
             "    -i <format>",
-            "        Specify the format of the input file. Currently supported options are json, csv, tsv, pipe, delimited, and bson",
+            "        Specify the format of the input file. Currently supported options are json, csv, tsv, pipe, delimited, and jbin",
             "",
             "    --input-delimiter <delimiter>",
             "    -D <delimiter>",
