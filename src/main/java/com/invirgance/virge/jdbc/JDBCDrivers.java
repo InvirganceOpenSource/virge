@@ -24,10 +24,11 @@
 package com.invirgance.virge.jdbc;
 
 import com.invirgance.convirgance.ConvirganceException;
-import com.invirgance.convirgance.input.JSONInput;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.source.ClasspathSource;
+import com.invirgance.convirgance.storage.Config;
+import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,10 +46,13 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
  */
 public class JDBCDrivers implements Iterable<JSONObject>
 {
+    private File drivers;
+    private Config config;
 
     public JDBCDrivers()
     {
         PrintStream err = System.err;
+        File home = new File(System.getProperty("user.home"));
         
         // Disable unnecessary maven logging
         if(System.getProperty("org.slf4j.simpleLogger.defaultLogLevel") == null)
@@ -73,6 +77,9 @@ public class JDBCDrivers implements Iterable<JSONObject>
                 
             });
         }
+        
+        this.drivers = new File(new File(new File(home, ".virge"), "database"), "drivers");
+        this.config = new Config(new ClasspathSource("/database/drivers.json"), this.drivers, "name");
     }
     
     
@@ -80,6 +87,8 @@ public class JDBCDrivers implements Iterable<JSONObject>
     {
         for(JSONObject descriptor : this)
         {
+            if(descriptor.getString("name").equalsIgnoreCase(type)) return descriptor;
+            
             for(String key : (JSONArray<String>)descriptor.getJSONArray("keys"))
             {
                 if(key.equalsIgnoreCase(type)) return descriptor;
@@ -100,6 +109,16 @@ public class JDBCDrivers implements Iterable<JSONObject>
         }
         
         return null;
+    }
+    
+    public void addDescriptor(JSONObject descriptor)
+    {
+        config.insert(descriptor);
+    }
+    
+    public void deleteDescriptor(JSONObject descriptor)
+    {
+        config.delete(descriptor);
     }
     
     public Driver getDriver(String type)
@@ -134,7 +153,7 @@ public class JDBCDrivers implements Iterable<JSONObject>
         
         if(descriptor == null) return null;
         
-        return (Driver)getDriver(descriptor.getJSONArray("keys").getString(0));
+        return (Driver)getDriver(descriptor.getString("name"));
     }
     
     public DataSource getDataSource(String type)
@@ -170,7 +189,7 @@ public class JDBCDrivers implements Iterable<JSONObject>
         
         if(descriptor == null) return null;
         
-        source = getDataSource(descriptor.getJSONArray("keys").getString(0));
+        source = getDataSource(descriptor.getString("name"));
         
         try
         {
@@ -203,10 +222,7 @@ public class JDBCDrivers implements Iterable<JSONObject>
     @Override
     public Iterator<JSONObject> iterator()
     {
-        ClasspathSource source = new ClasspathSource("/database/drivers.json");
-        
-        return new JSONInput().read(source).iterator();
+        return config.iterator();
     }
-    
     
 }

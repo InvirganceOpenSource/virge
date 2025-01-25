@@ -27,6 +27,7 @@ import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.virge.jdbc.JDBCDrivers;
+import java.util.Arrays;
 
 /**
  *
@@ -34,7 +35,19 @@ import com.invirgance.virge.jdbc.JDBCDrivers;
  */
 public class SQLDrivers implements Tool
 {
+    private static final String[] COMMANDS = new String[]{
+        "list",
+        "register",
+        "unregister"
+    };
+    
+    private String command = "list";
     private String driver;
+    
+    private String name;
+    private String artifact;
+    private String prefix;
+    private String shortName;
 
     @Override
     public String getName()
@@ -46,12 +59,52 @@ public class SQLDrivers implements Tool
     public String[] getHelp()
     {
         return new String[] {
-            "sqldrivers",
-            "    Lists available jdbc drivers for connecting to databases",
+            "sqldrivers [list|register] [options]",
             "",
-            "    --driver <driver>",
-            "    -d <driver>",
-            "         Print additional info about the specified driver "
+            "",
+            "    list",
+            "        Lists available jdbc drivers for connecting to databases. This is",
+            "        the default command if no command is specfied.",
+            "",
+            "        --driver <driver>",
+            "        -d <driver>",
+            "            The long name or short name of the driver",
+            "",
+            "",
+            "    register",
+            "        --name <name>",
+            "        -n <name>",
+            "            Set the name of the driver. If the name matches an existing",
+            "            driver, the existing driver will be updated.",
+            "",
+            "        --artifact <groupId:artifactId:version>",
+            "        -a <groupId:artifactId:version>",
+            "            The Maven coordinates of the JDBC driver. This option can be",
+            "            specified more than once if multiple JARs are needed.",
+            "",
+            "        --driver <className>",
+            "        -d <className",
+            "            The class name of the JDBC Driver implementation.",
+            "",
+            "        --prefix <url prefix>",
+            "        -p <url prefix>",
+            "            The url prefix used by this driver. e.g. jdbc:oracle:",
+            "            This option can be specified more than once if multiple",
+            "            prefixes are supported.",
+            "",
+            "        --short-name <name>",
+            "        -s <name>",
+            "            Add a short name for this driver",
+            "",
+            "",
+            "    unregister",
+            "        Removes the specified driver from the available database",
+            "        drivers.",
+            "",
+            "        --driver <driver>",
+            "        -d <driver>",
+            "            The long name or short name of the driver ",
+            "",
         };
     }
 
@@ -60,11 +113,37 @@ public class SQLDrivers implements Tool
     {
         for(int i=start; i<args.length; i++)
         {
+            if(i == start && Arrays.asList(COMMANDS).contains(args[i]))
+            {
+                this.command = args[i];
+                continue;
+            }
+            
             switch(args[i])
             {
                 case "--driver":
                 case "-d":
                     this.driver = args[++i];
+                    break;
+                    
+                case "--name":
+                case "-n":
+                    this.name = args[++i];
+                    break;
+                    
+                case "--artifact":
+                case "-a":
+                    this.artifact = args[++i];
+                    break;
+                    
+                case "--prefix":
+                case "-p":
+                    this.prefix = args[++i];
+                    break;
+                    
+                case "--short-name":
+                case "-k":
+                    this.shortName = args[++i];
                     break;
                 
                 default:
@@ -108,30 +187,61 @@ public class SQLDrivers implements Tool
     @Override
     public void execute() throws Exception
     {
-        if(driver != null) printDriver(driver);
+        if(command.equals("register")) registerDriver();
+        else if(command.equals("unregister")) unregisterDriver(driver);
+        else if(driver != null) printDriver(driver);
         else printAll();
+    }
+    
+    public void unregisterDriver(String driver)
+    {
+        JDBCDrivers drivers = new JDBCDrivers();
+        JSONObject descriptor = drivers.getDescriptor(driver);
+        
+        if(descriptor == null)
+        {
+            System.err.println("Driver '" + driver + "' not found!");
+            System.exit(1);
+        }
+        
+        drivers.deleteDescriptor(descriptor);
+    }
+    
+    public void registerDriver()
+    {
+        JDBCDrivers drivers = new JDBCDrivers();
+        JSONObject descriptor = drivers.getDescriptor(name);
+        
+        if(descriptor == null) 
+        {
+            descriptor = new JSONObject(true);
+            
+            descriptor.put("name", name);
+            descriptor.put("keys", new JSONArray());
+            descriptor.put("artifact", new JSONArray());
+            descriptor.put("driver", "");
+            descriptor.put("datasource", "com.invirgance.virge.jdbc.DriverDataSource");
+            descriptor.put("prefixes", new JSONArray());
+            descriptor.put("examples", new JSONArray());
+        }
+        
+        descriptor.put("name", name);
+        
+        if(driver != null) descriptor.put("driver", driver);
+        if(shortName != null && !descriptor.getJSONArray("keys").contains(shortName)) descriptor.getJSONArray("keys").add(shortName);
+        if(artifact != null && !descriptor.getJSONArray("artifact").contains(artifact)) descriptor.getJSONArray("artifact").add(artifact);
+        if(prefix != null && !descriptor.getJSONArray("prefixes").contains(prefix)) descriptor.getJSONArray("prefixes").add(prefix);
+        
+        drivers.addDescriptor(descriptor);
+        
+        System.err.println("Registered");
+        System.out.println(descriptor.toString(4));
     }
     
     public void printDriver(String driver)
     {
         JDBCDrivers drivers = new JDBCDrivers();
-        JSONObject selected = null;
-        
-        for(JSONObject descriptor : drivers)
-        {
-            if(descriptor.getString("name").equalsIgnoreCase(driver))
-            {
-                selected = descriptor;
-            }
-            
-            for(String key : (JSONArray<String>)descriptor.getJSONArray("keys"))
-            {
-                if(key.equalsIgnoreCase(driver))
-                {
-                    selected = descriptor;
-                }
-            }
-        }
+        JSONObject selected = drivers.getDescriptor(driver);
         
         if(selected == null) throw new ConvirganceException("Unknown driver: " + driver);
         
@@ -143,11 +253,17 @@ public class SQLDrivers implements Tool
         JDBCDrivers drivers = new JDBCDrivers();
         int[] widths = new int[]{ 14, 10, 8 };
         
+        String example;
+        String shortName;
+        
         for(JSONObject descriptor : drivers)
         {
+            shortName = !descriptor.getJSONArray("keys").isEmpty() ? descriptor.getJSONArray("keys").getString(0) : "";
+            example = !descriptor.getJSONArray("examples").isEmpty() ? descriptor.getJSONArray("examples").getString(0) : "";
+            
             if(widths[0] < descriptor.getString("name").length()) widths[0] = descriptor.getString("name").length();
-            if(widths[1] < descriptor.getJSONArray("keys").getString(0).length()) widths[1] = descriptor.getJSONArray("keys").getString(0).length();
-            if(widths[2] < descriptor.getJSONArray("examples").getString(0).length()) widths[2] = descriptor.getJSONArray("examples").getString(0).length();
+            if(widths[1] < shortName.length()) widths[1] = shortName.length();
+            if(widths[2] < example.length()) widths[2] = example.length();
         }
         
         System.out.print(formatWidth("Database Name", widths[0]));
@@ -164,11 +280,14 @@ public class SQLDrivers implements Tool
             
         for(JSONObject descriptor : drivers)
         {
+            shortName = !descriptor.getJSONArray("keys").isEmpty() ? descriptor.getJSONArray("keys").getString(0) : "";
+            example = !descriptor.getJSONArray("examples").isEmpty() ? descriptor.getJSONArray("examples").getString(0) : "";
+            
             System.out.print(formatWidth(descriptor.getString("name"), widths[0]));
             System.out.print("  ");
-            System.out.print(formatWidth(descriptor.getJSONArray("keys").getString(0), widths[1]));
+            System.out.print(formatWidth(shortName, widths[1]));
             System.out.print("  ");
-            System.out.println(formatWidth(descriptor.getJSONArray("examples").getString(0), widths[2]));
+            System.out.println(formatWidth(example, widths[2]));
         }
     }
     
