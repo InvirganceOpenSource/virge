@@ -263,6 +263,30 @@ public class SQLDrivers implements Tool
         add(descriptor.getJSONArray("prefixes"), prefix);
         add(descriptor.getJSONArray("examples"), example);
         
+        if(descriptor.get("name") == null || descriptor.getString("name").length() < 1)
+        {
+            System.err.println("Unique name is required!");
+            System.exit(1);
+        }
+        
+        if(descriptor.get("driver") == null || descriptor.getString("driver").length() < 1)
+        {
+            System.err.println("Driver class is required!");
+            System.exit(1);
+        }
+        
+        if(descriptor.getJSONArray("artifact").size() < 1)
+        {
+            System.err.println("Maven artifact is required!");
+            System.exit(1);
+        }
+        
+        if(descriptor.getJSONArray("prefixes").size() < 1)
+        {
+            System.err.println("JDBC URL prefix is required to identify driver URLs!");
+            System.exit(1);
+        }
+        
         drivers.addDescriptor(descriptor);
         
         System.err.println("Registered");
