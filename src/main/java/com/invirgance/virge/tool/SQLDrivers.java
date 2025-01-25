@@ -47,6 +47,7 @@ public class SQLDrivers implements Tool
     private String driver;
     
     private String name;
+    private String datasource;
     private List<String> artifact = new ArrayList<>();
     private List<String> prefix = new ArrayList<>();
     private List<String> shortName = new ArrayList<>();
@@ -89,6 +90,12 @@ public class SQLDrivers implements Tool
             "        -d <className",
             "            The class name of the JDBC Driver implementation.",
             "",
+            "        --data-source <className>",
+            "        -D <className",
+            "            The class name of the JDBC DataSource implementation. If",
+            "            not specified, a default Data Source wrapping the Driver",
+            "            will be used.",
+            "",
             "        --prefix <url prefix>",
             "        -p <url prefix>",
             "            The url prefix used by this driver. e.g. jdbc:oracle:",
@@ -127,6 +134,11 @@ public class SQLDrivers implements Tool
                 case "--driver":
                 case "-d":
                     this.driver = args[++i];
+                    break;
+                    
+                case "--data-source":
+                case "-D":
+                    this.datasource = args[++i];
                     break;
                     
                 case "--name":
@@ -244,6 +256,7 @@ public class SQLDrivers implements Tool
         descriptor.put("name", name);
         
         if(driver != null) descriptor.put("driver", driver);
+        if(datasource != null) descriptor.put("datasource", datasource);
         
         add(descriptor.getJSONArray("keys"), shortName);
         add(descriptor.getJSONArray("artifact"), artifact);
