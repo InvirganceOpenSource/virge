@@ -27,7 +27,9 @@ import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.virge.jdbc.JDBCDrivers;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -45,10 +47,10 @@ public class SQLDrivers implements Tool
     private String driver;
     
     private String name;
-    private String artifact;
-    private String prefix;
-    private String shortName;
-    private String example;
+    private List<String> artifact = new ArrayList<>();
+    private List<String> prefix = new ArrayList<>();
+    private List<String> shortName = new ArrayList<>();
+    private List<String> example = new ArrayList<>();;
 
     @Override
     public String getName()
@@ -134,22 +136,22 @@ public class SQLDrivers implements Tool
                     
                 case "--artifact":
                 case "-a":
-                    this.artifact = args[++i];
+                    this.artifact.add(args[++i]);
                     break;
                     
                 case "--prefix":
                 case "-p":
-                    this.prefix = args[++i];
+                    this.prefix.add(args[++i]);
                     break;
                     
                 case "--short-name":
                 case "-k":
-                    this.shortName = args[++i];
+                    this.shortName.add(args[++i]);
                     break;
                     
                 case "--example":
                 case "-e":
-                    this.example = args[++i];
+                    this.example.add(args[++i]);
                     break;
                 
                 default:
@@ -213,6 +215,14 @@ public class SQLDrivers implements Tool
         drivers.deleteDescriptor(descriptor);
     }
     
+    private void add(JSONArray<String> array, List<String> addition)
+    {
+        for(String item : addition)
+        {
+            if(!array.contains(item)) array.add(item);
+        }
+    }
+    
     public void registerDriver()
     {
         JDBCDrivers drivers = new JDBCDrivers();
@@ -234,10 +244,11 @@ public class SQLDrivers implements Tool
         descriptor.put("name", name);
         
         if(driver != null) descriptor.put("driver", driver);
-        if(shortName != null && !descriptor.getJSONArray("keys").contains(shortName)) descriptor.getJSONArray("keys").add(shortName);
-        if(artifact != null && !descriptor.getJSONArray("artifact").contains(artifact)) descriptor.getJSONArray("artifact").add(artifact);
-        if(prefix != null && !descriptor.getJSONArray("prefixes").contains(prefix)) descriptor.getJSONArray("prefixes").add(prefix);
-        if(example != null && !descriptor.getJSONArray("examples").contains(example)) descriptor.getJSONArray("examples").add(example);
+        
+        add(descriptor.getJSONArray("keys"), shortName);
+        add(descriptor.getJSONArray("artifact"), artifact);
+        add(descriptor.getJSONArray("prefixes"), prefix);
+        add(descriptor.getJSONArray("examples"), example);
         
         drivers.addDescriptor(descriptor);
         
