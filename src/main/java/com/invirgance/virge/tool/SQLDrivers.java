@@ -48,6 +48,7 @@ public class SQLDrivers implements Tool
     private String artifact;
     private String prefix;
     private String shortName;
+    private String example;
 
     @Override
     public String getName()
@@ -145,6 +146,11 @@ public class SQLDrivers implements Tool
                 case "-k":
                     this.shortName = args[++i];
                     break;
+                    
+                case "--example":
+                case "-e":
+                    this.example = args[++i];
+                    break;
                 
                 default:
                     return false;
@@ -231,6 +237,7 @@ public class SQLDrivers implements Tool
         if(shortName != null && !descriptor.getJSONArray("keys").contains(shortName)) descriptor.getJSONArray("keys").add(shortName);
         if(artifact != null && !descriptor.getJSONArray("artifact").contains(artifact)) descriptor.getJSONArray("artifact").add(artifact);
         if(prefix != null && !descriptor.getJSONArray("prefixes").contains(prefix)) descriptor.getJSONArray("prefixes").add(prefix);
+        if(example != null && !descriptor.getJSONArray("examples").contains(example)) descriptor.getJSONArray("examples").add(example);
         
         drivers.addDescriptor(descriptor);
         
