@@ -87,11 +87,11 @@ public class SQLDrivers implements Tool
             "            specified more than once if multiple JARs are needed.",
             "",
             "        --driver <className>",
-            "        -d <className",
+            "        -d <className>",
             "            The class name of the JDBC Driver implementation.",
             "",
             "        --data-source <className>",
-            "        -D <className",
+            "        -D <className>",
             "            The class name of the JDBC DataSource implementation. If",
             "            not specified, a default Data Source wrapping the Driver",
             "            will be used.",
@@ -113,8 +113,7 @@ public class SQLDrivers implements Tool
             "",
             "        --driver <driver>",
             "        -d <driver>",
-            "            The long name or short name of the driver ",
-            "",
+            "            The long name or short name of the driver "
         };
     }
 
