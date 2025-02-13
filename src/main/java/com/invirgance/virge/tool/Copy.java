@@ -196,7 +196,10 @@ public class Copy implements Tool
         
         file = new File(path);
         
-        if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
+        if(file.getParentFile() != null && !file.getParentFile().exists()) 
+        {
+            file.getParentFile().mkdirs();
+        }
         
         return new FileTarget(file);
     }

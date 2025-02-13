@@ -87,5 +87,26 @@
             "jdbc:hsqldb:file:/<directory>[;shutdown=true]",
             "jdbc:hsqldb:res:/<jarDirectory>"
         ]
+    },
+    {
+        "name": "PostgreSQL",
+        "keys": [
+            "postgres",
+            "postgresql",
+            "psql"
+        ],
+        "artifact": [
+            "org.postgresql:postgresql:42.7.5"
+        ],
+        "driver": "org.postgresql.Driver",
+        "datasource": "com.invirgance.virge.jdbc.DriverDataSource",
+        "prefixes": [
+            "jdbc:postgresql:"
+        ],
+        "examples": [
+            "jdbc:postgresql://<host>[:<port>][/<database>]",
+            "jdbc:postgresql:<database>",
+            "jdbc:postgresql:/"
+        ]
     }
 ]
