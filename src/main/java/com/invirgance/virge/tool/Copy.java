@@ -263,7 +263,7 @@ public class Copy implements Tool
     {
         return new String[] {
             "copy [options] <source> <target>",
-            "    Copy a file while performing a tranformation between formats as required",
+            "    Copy a file while performing a transformation between formats as required",
             "",
             "    --input <format>",
             "    -i <format>",
