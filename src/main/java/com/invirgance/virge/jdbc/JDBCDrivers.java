@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Driver;
@@ -121,6 +122,22 @@ public class JDBCDrivers implements Iterable<JSONObject>
         config.delete(descriptor);
     }
     
+    private URL[] translate(File[] files)
+    {
+        URL[] urls = new URL[files.length];
+        
+        try
+        {
+            for(int i=0; i<files.length; i++)
+            {
+                urls[i] = files[i].toURI().toURL();
+            }
+        }
+        catch(MalformedURLException e) { throw new ConvirganceException(e); }
+        
+        return urls;
+    }
+    
     public Driver getDriver(String type)
     {
         JSONObject descriptor = getDescriptor(type);
@@ -128,12 +145,12 @@ public class JDBCDrivers implements Iterable<JSONObject>
         
         Class clazz;
         URLClassLoader loader;
-        URL[] urls;
+        File[] files;
         
         if(descriptor == null) return null;
         
-        urls =  maven.withMavenCentralRepo(true).resolve(descriptor.getJSONArray("artifact")).withTransitivity().as(URL.class);
-        loader = new URLClassLoader(urls);
+        files =  maven.withMavenCentralRepo(true).resolve(descriptor.getJSONArray("artifact")).withTransitivity().asFile();
+        loader = new URLClassLoader(translate(files));
         
         try
         {
