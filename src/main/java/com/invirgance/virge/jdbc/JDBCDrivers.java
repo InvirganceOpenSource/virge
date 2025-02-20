@@ -180,12 +180,12 @@ public class JDBCDrivers implements Iterable<JSONObject>
         
         Class clazz;
         URLClassLoader loader;
-        URL[] urls;
+        File[] files;
         
         if(descriptor == null) return null;
         
-        urls =  maven.withMavenCentralRepo(true).resolve(descriptor.getJSONArray("artifact")).withTransitivity().as(URL.class);
-        loader = new URLClassLoader(urls);
+        files =  maven.withMavenCentralRepo(true).resolve(descriptor.getJSONArray("artifact")).withTransitivity().asFile();
+        loader = new URLClassLoader(translate(files));
         
         try
         {
