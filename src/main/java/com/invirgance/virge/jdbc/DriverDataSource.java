@@ -77,7 +77,7 @@ public class DriverDataSource implements DataSource
         Properties properties = new Properties();
         
         properties.put("user", this.username);
-        properties.put("password", this.password);
+        if(this.password != null) properties.put("password", this.password);
         
         return new JDBCDrivers().getDriverByURL(url).connect(url, properties);
     }
