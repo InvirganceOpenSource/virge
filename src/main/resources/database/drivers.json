@@ -108,5 +108,25 @@
             "jdbc:postgresql:<database>",
             "jdbc:postgresql:/"
         ]
+    },
+    {
+        "name": "MariaDB/MySQL",
+        "keys": [
+            "mariadb",
+            "maria"
+        ],
+        "artifact": [
+            "org.mariadb.jdbc:mariadb-java-client:3.5.2"
+        ],
+        "driver": "org.mariadb.jdbc.Driver",
+           "datasource": "org.mariadb.jdbc.MariaDbDataSource",
+        "prefixes": [
+            "jdbc:mariadb:",
+            "jdbc:mysql:"
+        ],
+         "examples": [
+            "jdbc:mariadb://<host>[<:port>]/[/<database>]",
+            "jdbc:mysql://<host>[<:port>]/[/<database>]?permitMysqlScheme"
+        ]
     }
 ]

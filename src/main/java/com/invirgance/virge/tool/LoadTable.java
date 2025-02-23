@@ -279,6 +279,9 @@ public class LoadTable implements Tool
     
     private String normalizeObjectName(String name)
     {
+        if(this.jdbcURL.contains("jdbc:mysql")) return name;
+        else if(this.jdbcURL.contains("jdbc:maria")) return "`" + name + "`";
+        
         return "\"" + name + "\"";
     }
     
@@ -292,7 +295,7 @@ public class LoadTable implements Tool
         
         sql.append(tableName);
         sql.append("(\n");
-        
+
         try(CloseableIterator<JSONObject> iterator = cursor.iterator())
         {
             if(!iterator.hasNext()) return null;
