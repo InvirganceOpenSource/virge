@@ -168,7 +168,8 @@ public class Virge
     }
     
     private static boolean loadModule(String[] args) throws Exception
-    {        
+    {
+        ConfigurableMavenResolverSystem maven;
         Class clazz;
         URLClassLoader loader;
         File[] files;
@@ -177,10 +178,6 @@ public class Virge
         
         String moduleOption = args[0];
         String[] arguments;
-
-        ConfigurableMavenResolverSystem maven = Maven.configureResolver();
-        
-        hideLoggingError();
         
         for(JSONObject option: modules)
         {
@@ -191,11 +188,16 @@ public class Virge
             }
         }
         
+        maven = Maven.configureResolver();
+        
         // return to main and load through Tools[]        
         if(module == null) return false;
-        arguments =  Arrays.copyOfRange(args,1,args.length);
         
-        // TODO change to true on publish
+        hideLoggingError();
+        
+        arguments = Arrays.copyOfRange(args, 1, args.length);
+        
+        // TODO change to true on publish, currently using local repo
         // DONT FORGET ABOUT THIS
         files = maven.withMavenCentralRepo(false).resolve(module.getJSONArray("artifact")).withTransitivity().asFile();
         loader = new URLClassLoader(translate(files));
