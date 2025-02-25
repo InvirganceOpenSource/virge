@@ -1,0 +1,26 @@
+[
+    {
+        "name": "file",
+        "commands": [
+            "convert"
+        ],
+        "artifact": [
+            "com.invirgance:virge-file:1.2-SNAPSHOT"
+        ],
+        "main": "com.invirgance.virge.file.VirgeFile",
+        "help": "file <command> [options]"
+    },
+    {
+        "name": "sql",
+        "commands": [
+            "sqltable",
+            "sqlload",
+            "sqldrivers"
+        ],
+        "artifact": [
+            "com.invirgance:virge-sql:1.0-SNAPSHOT"
+        ],
+        "main": "com.invirgance.virge.sql.VirgeSQL",
+        "help": "sql <command> [options]"
+    }
+]
