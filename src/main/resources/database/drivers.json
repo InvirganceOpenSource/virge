@@ -128,5 +128,23 @@
             "jdbc:mariadb://<host>[<:port>]/[/<database>]",
             "jdbc:mysql://<host>[<:port>]/[/<database>]?permitMysqlScheme"
         ]
+    },
+    {
+        "name": "DB2",
+        "keys": [
+            "db2"
+        ],
+        "artifact": [
+            "com.ibm.db2:jcc:12.1.0.0"
+        ],
+        "driver": "com.ibm.db2.jcc.DB2Driver",
+        "datasource": "com.invirgance.virge.jdbc.DriverDataSource",
+        "prefixes": [
+            "jdbc:db2:"
+        ],
+         "examples": [
+            "jdbc:db2://<host>[:<port>]/<database>",
+            "jdbc:db2://localhost:50000/sample"
+        ]
     }
 ]
