@@ -5,7 +5,7 @@
             "convert"
         ],
         "artifact": [
-            "com.invirgance:virge-file:1.2-SNAPSHOT"
+            "com.invirgance:virge-file:1.0-SNAPSHOT"
         ],
         "main": "com.invirgance.virge.file.VirgeFile",
         "help": "file <command> [options]"
