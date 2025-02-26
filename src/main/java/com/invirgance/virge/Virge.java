@@ -48,7 +48,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 public class Virge
 {
     private static List<JSONObject> modules = new ArrayList<JSONObject>();
-    
+
     public static final Tool[] tools = new Tool[] {
         new Copy(),
         new GenerateTable(),
@@ -170,6 +170,7 @@ public class Virge
     
     private static boolean loadModule(String[] args) throws Exception
     {
+        boolean central;
         ConfigurableMavenResolverSystem maven;
         Class clazz;
         URLClassLoader loader;
@@ -197,9 +198,8 @@ public class Virge
         
         arguments = Arrays.copyOfRange(args, 1, args.length);
         
-        // TODO change to true on publish, currently using local repo
-        // DONT FORGET ABOUT THIS
-        files = maven.withMavenCentralRepo(false).resolve(module.getJSONArray("artifact")).withTransitivity().asFile();
+        central = !Boolean.parseBoolean(System.getProperty("virge.localrepo", "false"));
+        files = maven.withMavenCentralRepo(central).resolve(module.getJSONArray("artifact")).withTransitivity().asFile();
         loader = new URLClassLoader(translate(files));
 
         clazz = loader.loadClass(module.get("main").toString());
