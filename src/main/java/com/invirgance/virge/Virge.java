@@ -48,6 +48,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 public class Virge
 {
     private static List<JSONObject> modules = new ArrayList<JSONObject>();
+    
     public static final Tool[] tools = new Tool[] {
         new Copy(),
         new GenerateTable(),
@@ -125,7 +126,7 @@ public class Virge
         System.exit(1);
     }
     
-    private static void hideLoggingError()
+    public static void hideLoggingError()
     {
         if(System.getProperty("org.slf4j.simpleLogger.defaultLogLevel") == null)
         {
@@ -188,12 +189,11 @@ public class Virge
             }
         }
         
+        hideLoggingError();
         maven = Maven.configureResolver();
         
         // return to main and load through Tools[]        
         if(module == null) return false;
-        
-        hideLoggingError();
         
         arguments = Arrays.copyOfRange(args, 1, args.length);
         
