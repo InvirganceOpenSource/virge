@@ -102,6 +102,9 @@ public class Virge
         else
         {
             for(Tool tool : tools) print(tool.getHelp(), System.out);
+            
+            // TODO: Add full help print for modules, this seems bad since we would be loading all the tools. 
+            // Perhaps theres a way to just get the full help text (and not just storing it in JSON modules)
         }
         
         System.exit(1);
@@ -118,9 +121,14 @@ public class Virge
         
         for(Tool tool : tools) System.out.println("    " + tool.getHelp()[0]);
         
-        System.out.println("\n  External Modules:");
+        System.out.println("\nExternal Modules:");
         
-        for(JSONObject module : modules) System.out.println("    " + module.get("help"));
+        for(JSONObject module : modules) {
+            System.out.println("\n    " + module.get("help"));
+            System.out.println("\tCommands:");
+           
+            for(Object command : module.getJSONArray("commands")) System.out.println("\t  " + command);
+        }
         
         System.out.println();
         System.exit(1);

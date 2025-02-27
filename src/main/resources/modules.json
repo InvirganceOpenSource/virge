@@ -13,9 +13,7 @@
     {
         "name": "sql",
         "commands": [
-            "sqltable",
-            "sqlload",
-            "sqldrivers"
+            "drivers"
         ],
         "artifact": [
             "com.invirgance:virge-sql:1.0-SNAPSHOT"
