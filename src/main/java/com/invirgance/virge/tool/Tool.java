@@ -22,13 +22,21 @@ SOFTWARE.
 package com.invirgance.virge.tool;
 
 /**
- * 
+ * Made to represent a tool/command that will be used with Virge.
  * @author jbanes
  */
 public interface Tool
 {
+    /**
+     * The command name
+     * @return The name of the command
+     */
     public String getName();
     
+    /**
+     * All help information for the tool. This will be printed out with -h / --help
+     * @return A string arrays containing each parameter for the command.
+     */
     public String[] getHelp();
     
     /**
@@ -40,5 +48,9 @@ public interface Tool
      */
     public boolean parse(String[] args, int start) throws Exception;
     
+    /**
+     * For running the tool after parameters have been setup.
+     * @throws Exception Raised if a mishap occurs during execution.
+     */
     public void execute() throws Exception;
 }
