@@ -28,8 +28,8 @@ import com.invirgance.convirgance.json.JSONArray;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.source.ClasspathSource;
 import com.invirgance.convirgance.storage.Config;
+import static com.invirgance.virge.Virge.hideLoggingError;
 import java.io.File;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -42,42 +42,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 /**
- *
+ * Manages the JDBCDrivers config and retrieving the drivers from Maven
  * @author jbanes
  */
 public class JDBCDrivers implements Iterable<JSONObject>
 {
-    private File drivers;
-    private Config config;
+    private final File drivers;
+    private final Config config;
 
     public JDBCDrivers()
     {
-        PrintStream err = System.err;
         File home = new File(System.getProperty("user.home"));
         
         // Disable unnecessary maven logging
-        if(System.getProperty("org.slf4j.simpleLogger.defaultLogLevel") == null)
-        {
-            System.getProperty("org.slf4j.simpleLogger.defaultLogLevel", "error");
-            
-            System.setErr(new PrintStream(err) {
-                private int counter;
-                
-                @Override
-                public void println(String str)
-                {
-                    if(str.startsWith("SLF4J: ") && counter < 3)
-                    {
-                        counter++;
-                        
-                        return;
-                    }
-                    
-                    super.println(str);
-                }
-                
-            });
-        }
+        hideLoggingError();
         
         this.drivers = new File(new File(new File(home, ".virge"), "database"), "drivers");
         this.config = new Config(new ClasspathSource("/database/drivers.json"), this.drivers, "name");
