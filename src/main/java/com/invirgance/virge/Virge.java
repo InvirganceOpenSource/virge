@@ -102,10 +102,22 @@ public class Virge
         else
         {
             for(Tool tool : tools) print(tool.getHelp(), System.out);
-            
-            // TODO: Add full help print for modules, this seems bad since we would be loading all the tools. 
-            // Perhaps theres a way to just get the full help text (and not just storing it in JSON modules)
         }
+        
+        System.exit(1);
+    }
+    
+    public static void printModuleHelp(Tool module, String name)
+    {
+        if(module == null) printHelp(null);
+        
+        System.out.println();
+        System.out.println("Usage: java -jar virge.jar " + name + " <command>");
+        System.out.println();
+        System.out.println("Commands:");
+        System.out.println();
+        
+        print(module.getHelp(), System.out);
         
         System.exit(1);
     }
@@ -121,13 +133,10 @@ public class Virge
         
         for(Tool tool : tools) System.out.println("    " + tool.getHelp()[0]);
         
-        System.out.println("\nExternal Modules:");
+        System.out.println("\nExternal Modules:\n");
         
         for(JSONObject module : modules) {
-            System.out.println("\n    " + module.get("help"));
-            System.out.println("\tCommands:");
-           
-            for(Object command : module.getJSONArray("commands")) System.out.println("\t  " + command);
+            System.out.println("    " + module.get("help"));
         }
         
         System.out.println();
@@ -198,12 +207,12 @@ public class Virge
             }
         }
         
-        hideLoggingError();
-        maven = Maven.configureResolver();
-        
         // return to main and load through Tools[]        
         if(module == null) return false;
         
+        hideLoggingError();
+        maven = Maven.configureResolver();
+               
         arguments = Arrays.copyOfRange(args, 1, args.length);
         
         central = !Boolean.parseBoolean(System.getProperty("virge.localrepo", "false"));

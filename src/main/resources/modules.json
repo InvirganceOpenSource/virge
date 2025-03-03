@@ -8,7 +8,7 @@
             "com.invirgance:virge-file:1.0-SNAPSHOT"
         ],
         "main": "com.invirgance.virge.file.VirgeFile",
-        "help": "file <command> [options]"
+        "help": "file - Tools for copying, converting/transforming files."
     },
     {
         "name": "sql",
@@ -19,6 +19,6 @@
             "com.invirgance:virge-sql:1.0-SNAPSHOT"
         ],
         "main": "com.invirgance.virge.sql.VirgeSQL",
-        "help": "sql <command> [options]"
+        "help": "sql - Tools for interating with SQL Databases (currently only supports Driver registration/unregistration)."
     }
 ]
