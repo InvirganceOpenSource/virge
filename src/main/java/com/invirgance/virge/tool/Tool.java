@@ -40,6 +40,14 @@ public interface Tool
     public String[] getHelp();
     
     /**
+     * by default this returns the first line of getHelp() otherwise override this method to provide a brief description.
+     * @return A short description of the command.
+     */
+    default public String getShortDescription(){
+        return getHelp()[0];
+    }
+    
+    /**
      * Parses the command line arguments and returns 
      * 
      * @param args array of command line arguments
