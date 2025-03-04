@@ -40,7 +40,9 @@ public interface Tool
     public String[] getHelp();
     
     /**
-     * by default this returns the first line of getHelp() otherwise override this method to provide a brief description.
+     * Provides a short description about the tool.
+     * By default this returns the first line of getHelp().
+     * 
      * @return A short description of the command.
      */
     default public String getShortDescription()
