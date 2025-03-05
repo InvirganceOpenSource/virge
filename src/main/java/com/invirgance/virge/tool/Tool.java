@@ -50,6 +50,12 @@ public interface Tool
         return getHelp()[0];
     }
     
+    
+    default public String getExample()
+    {
+        return getHelp()[0];
+    }
+    
     /**
      * Parses the command line arguments and returns 
      * 
