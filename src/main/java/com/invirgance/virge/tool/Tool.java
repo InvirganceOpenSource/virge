@@ -50,10 +50,15 @@ public interface Tool
         return getHelp()[0];
     }
     
-    
+    /**
+     * Provides a short usage example.
+     * By default this returns an incomplete usage example.
+     * 
+     * @return The usage example
+     */
     default public String getExample()
     {
-        return getHelp()[0];
+        return "virge.jar <module> " + getName();
     }
     
     /**
