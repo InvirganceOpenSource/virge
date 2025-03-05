@@ -66,6 +66,8 @@ public class JDBCDrivers implements Iterable<JSONObject>
         {
             if(descriptor.getString("name").equalsIgnoreCase(type)) return descriptor;
             
+            if(descriptor.getJSONArray("keys") == null) continue;
+            
             for(String key : (JSONArray<String>)descriptor.getJSONArray("keys"))
             {
                 if(key.equalsIgnoreCase(type)) return descriptor;
