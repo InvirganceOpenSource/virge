@@ -90,7 +90,7 @@ public class Virge
     public static void printHelp(Tool selected)
     {
         System.out.println();
-        System.out.println("Usage: java -jar virge.jar <command>");
+        System.out.println("Usage: java -jar virge.jar <command|module>");
         System.out.println();
         System.out.println("Commands:");
         System.out.println();
