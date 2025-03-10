@@ -24,9 +24,9 @@
 package com.invirgance.virge.tool;
 
 import com.invirgance.convirgance.ConvirganceException;
+import com.invirgance.convirgance.jdbc.AutomaticDriver;
+import com.invirgance.convirgance.jdbc.AutomaticDrivers;
 import com.invirgance.convirgance.json.JSONArray;
-import com.invirgance.convirgance.json.JSONObject;
-import com.invirgance.virge.jdbc.JDBCDrivers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +50,6 @@ public class SQLDrivers implements Tool
     private String datasource;
     private List<String> artifact = new ArrayList<>();
     private List<String> prefix = new ArrayList<>();
-    private List<String> shortName = new ArrayList<>();
     private List<String> example = new ArrayList<>();;
 
     @Override
@@ -102,10 +101,6 @@ public class SQLDrivers implements Tool
             "            This option can be specified more than once if multiple",
             "            prefixes are supported.",
             "",
-            "        --short-name <name>",
-            "        -s <name>",
-            "            Add a short name for this driver",
-            "",
             "",
             "    unregister",
             "        Removes the specified driver from the available database",
@@ -153,11 +148,6 @@ public class SQLDrivers implements Tool
                 case "--prefix":
                 case "-p":
                     this.prefix.add(args[++i]);
-                    break;
-                    
-                case "--short-name":
-                case "-k":
-                    this.shortName.add(args[++i]);
                     break;
                     
                 case "--example":
@@ -212,136 +202,137 @@ public class SQLDrivers implements Tool
         else printAll();
     }
     
-    public void unregisterDriver(String driver)
+    public void unregisterDriver(String name)
     {
-        JDBCDrivers drivers = new JDBCDrivers();
-        JSONObject descriptor = drivers.getDescriptor(driver);
-        
-        if(descriptor == null)
+        AutomaticDriver driver = new AutomaticDrivers().getDriverByName(name);
+       
+        if(driver == null)
         {
-            System.err.println("Driver '" + driver + "' not found!");
+            System.err.println("Driver '" + name + "' not found!");
             System.exit(1);
         }
         
-        drivers.deleteDescriptor(descriptor);
-    }
-    
-    private void add(JSONArray<String> array, List<String> addition)
-    {
-        for(String item : addition)
-        {
-            if(!array.contains(item)) array.add(item);
-        }
+        System.out.println("Removed Driver: " + name);
+        driver.delete();
     }
     
     public void registerDriver()
     {
-        JDBCDrivers drivers = new JDBCDrivers();
-        JSONObject descriptor = drivers.getDescriptor(name);
+        AutomaticDrivers.AutomaticDriverBuilder builder;
+        AutomaticDrivers drivers = new AutomaticDrivers();
+        AutomaticDriver descriptor = drivers.getDriverByName(name);
         
         if(descriptor == null) 
         {
-            descriptor = new JSONObject(true);
+            builder = drivers.createDriver(name)
+                    .artifact(artifact.toArray(new String[artifact.size()]))
+                    .prefix(prefix.toArray(new String[prefix.size()]))
+                    .example(example.toArray(new String[example.size()]));
             
-            descriptor.put("name", name);
-            descriptor.put("keys", new JSONArray());
-            descriptor.put("artifact", new JSONArray());
-            descriptor.put("driver", "");
-            descriptor.put("datasource", "com.invirgance.virge.jdbc.DriverDataSource");
-            descriptor.put("prefixes", new JSONArray());
-            descriptor.put("examples", new JSONArray());
+            if(driver != null) builder = builder.driver(driver);
+            
+            if(datasource != null)
+            {
+                builder = builder.datasource(datasource);
+            }
+            else
+            {
+                builder = builder.datasource("com.invirgance.virge.jdbc.DriverDataSource");
+            }
+            
+            descriptor = builder.build();
+        }
+        else
+        {
+
+            if(artifact.size() != 0) descriptor.setArtifacts(artifact.toArray(new String[artifact.size()]));
+            if(prefix.size() != 0) descriptor.setPrefixes(prefix.toArray(new String[prefix.size()]));
+            if(example.size() != 0) descriptor.setExamples(example.toArray(new String[example.size()]));
+                        
+            if(driver != null) descriptor.setDriver(driver);
+            if(datasource != null) descriptor.setDataSource(datasource);
+            
+            System.out.println("Updated existing driver: " + name);
         }
         
-        descriptor.put("name", name);
-        
-        if(driver != null) descriptor.put("driver", driver);
-        if(datasource != null) descriptor.put("datasource", datasource);
-        
-        add(descriptor.getJSONArray("keys"), shortName);
-        add(descriptor.getJSONArray("artifact"), artifact);
-        add(descriptor.getJSONArray("prefixes"), prefix);
-        add(descriptor.getJSONArray("examples"), example);
-        
-        if(descriptor.get("name") == null || descriptor.getString("name").length() < 1)
+        if(descriptor.getName() == null || descriptor.getName().length() < 1)
         {
             System.err.println("Unique name is required!");
+            System.out.println("Hint: use -n to specify a simple name to use when working with the driver.");
+
             System.exit(1);
         }
         
-        if(descriptor.get("driver") == null || descriptor.getString("driver").length() < 1)
+        if(descriptor.getDriver() == null)
         {
             System.err.println("Driver class is required!");
+            System.out.println("Hint: use -d to specify the driver class, double check that the 'd' is lowercase.");
+
             System.exit(1);
         }
         
-        if(descriptor.getJSONArray("artifact").size() < 1)
+        if(descriptor.getArtifacts().length < 1)
         {
             System.err.println("Maven artifact is required!");
+            System.out.println("Hint: use -a to specify the artifact.");
+ 
             System.exit(1);
         }
         
-        if(descriptor.getJSONArray("prefixes").size() < 1)
+        if(descriptor.getPrefixes().length < 1)
         {
             System.err.println("JDBC URL prefix is required to identify driver URLs!");
+            System.out.println("Hint: use -p to specify the prefix.");
+ 
             System.exit(1);
         }
         
-        drivers.addDescriptor(descriptor);
-        
+        descriptor.save();
+
         System.err.println("Registered");
-        System.out.println(descriptor.toString(4));
+        System.out.println(descriptor.toString());
     }
     
     public void printDriver(String driver)
     {
-        JDBCDrivers drivers = new JDBCDrivers();
-        JSONObject selected = drivers.getDescriptor(driver);
-        
+        AutomaticDriver selected = AutomaticDrivers.getDriverByName(driver);
+
         if(selected == null) throw new ConvirganceException("Unknown driver: " + driver);
         
-        System.out.println(selected.toString(4));
+        System.out.println(selected.toString());
     }
     
     public void printAll()
     {
-        JDBCDrivers drivers = new JDBCDrivers();
-        int[] widths = new int[]{ 14, 10, 8 };
+        AutomaticDrivers drivers = new AutomaticDrivers();
+        
+        int[] widths = new int[]{ 14, 8 };
         
         String example;
-        String shortName;
         
-        for(JSONObject descriptor : drivers)
+        for(AutomaticDriver descriptor : drivers)
         {
-            shortName = !descriptor.getJSONArray("keys").isEmpty() ? descriptor.getJSONArray("keys").getString(0) : "";
-            example = !descriptor.getJSONArray("examples").isEmpty() ? descriptor.getJSONArray("examples").getString(0) : "";
+             example = !(descriptor.getExamples().length == 0) ? descriptor.getExamples()[0] : "";
             
-            if(widths[0] < descriptor.getString("name").length()) widths[0] = descriptor.getString("name").length();
-            if(widths[1] < shortName.length()) widths[1] = shortName.length();
-            if(widths[2] < example.length()) widths[2] = example.length();
+            if(widths[0] < descriptor.getName().length()) widths[0] = descriptor.getName().length();
+            if(widths[1] < example.length()) widths[1] = example.length();
         }
         
         System.out.print(formatWidth("Database Name", widths[0]));
         System.out.print("  ");
-        System.out.print(formatWidth("Short Name", widths[1]));
-        System.out.print("  ");
-        System.out.println(formatWidth("Connection String Example", widths[2]));
+        System.out.println(formatWidth("Connection String Example", widths[1]));
         
         System.out.print(drawWidth('=', widths[0]));
         System.out.print("  ");
-        System.out.print(drawWidth('=', widths[1]));
-        System.out.print("  ");
-        System.out.println(drawWidth('=', widths[2]));
+        System.out.println(drawWidth('=', widths[1]));
             
-        for(JSONObject descriptor : drivers)
+        for(AutomaticDriver descriptor : drivers)
         {
-            shortName = !descriptor.getJSONArray("keys").isEmpty() ? descriptor.getJSONArray("keys").getString(0) : "";
-            example = !descriptor.getJSONArray("examples").isEmpty() ? descriptor.getJSONArray("examples").getString(0) : "";
+            example = !(descriptor.getExamples().length == 0) ? descriptor.getExamples()[0] : "";
             
-            System.out.print(formatWidth(descriptor.getString("name"), widths[0]));
+            System.out.print(formatWidth(descriptor.getName(), widths[0]));
             System.out.print("  ");
-            System.out.print(formatWidth(shortName, widths[1]));
-            System.out.print("  ");
-            System.out.println(formatWidth(example, widths[2]));
+            System.out.println(formatWidth(example, widths[1]));
         }
     }
     
