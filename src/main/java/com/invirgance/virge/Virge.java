@@ -47,6 +47,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
  */
 public class Virge
 {
+    public static final String HELP_SPACING = "    ";
+    public static final String HELP_DESCRIPTION_SPACING = "   ";
+    
     private static List<JSONObject> modules = new ArrayList<JSONObject>();
 
     public static final Tool[] tools = new Tool[] {
