@@ -89,8 +89,10 @@ public class Virge
     
     public static void printHelp(Tool selected)
     {
+        //Note: This currently only prints the help for internal tools 
+        
         System.out.println();
-        System.out.println("Usage: java -jar virge.jar <command|module>");
+        System.out.println("Usage: virge.jar <COMMAND | MODULE>");
         System.out.println();
         System.out.println("Commands:");
         System.out.println();
@@ -112,7 +114,7 @@ public class Virge
         if(module == null) printHelp(null);
         
         System.out.println();
-        System.out.println("Usage: java -jar virge.jar " + name + " <command>");
+        System.out.println("Usage: virge.jar " + name + " <COMMAND>");
         System.out.println();
         System.out.println("Commands:");
         System.out.println();
@@ -125,7 +127,7 @@ public class Virge
     public static void printShortHelp()
     {
         System.out.println();
-        System.out.println("Usage: java -jar virge.jar <command>");
+        System.out.println("Usage: virge.jar <COMMAND | MODULE>");
         System.out.println();
         System.out.println("Commands:");
         System.out.println();
@@ -133,9 +135,10 @@ public class Virge
         
         for(Tool tool : tools) System.out.println("    " + tool.getHelp()[0]);
         
-        System.out.println("\nExternal Modules:\n");
+        System.out.println("\nModules:\n");
         
-        for(JSONObject module : modules) {
+        for(JSONObject module : modules) 
+        {
             System.out.println("    " + module.get("help"));
         }
         
