@@ -235,7 +235,7 @@ public class Virge
         // TODO: Need to print help text
         if(args.length < 1) printShortHelp();
         
-        if(args[0].equals("--help") || args[0].equals("-h") || args[0].equals("-?"))
+        if(args[0].equals("--help") || args[0].equals("-h"))
         {
             printHelp(null);
         }
