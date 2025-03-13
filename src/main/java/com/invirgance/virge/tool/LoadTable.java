@@ -25,13 +25,13 @@ import com.invirgance.convirgance.CloseableIterator;
 import com.invirgance.convirgance.ConvirganceException;
 import com.invirgance.convirgance.dbms.*;
 import com.invirgance.convirgance.input.*;
-import com.invirgance.convirgance.jdbc.datasource.DriverDataSource;
 import com.invirgance.convirgance.json.JSONObject;
 import com.invirgance.convirgance.source.FileSource;
 import com.invirgance.convirgance.source.InputStreamSource;
 import com.invirgance.convirgance.source.Source;
 import com.invirgance.virge.Virge;
 import static com.invirgance.virge.Virge.exit;
+import com.invirgance.virge.jdbc.JDBCDrivers;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -337,7 +337,7 @@ public class LoadTable implements Tool
     public void execute() throws Exception
     {
         Query query = getInsertQuery();
-        DBMS dbms = new DBMS(new DriverDataSource().getDataSource(jdbcURL, username, password));
+        DBMS dbms = new DBMS(new JDBCDrivers().getDataSource(jdbcURL, username, password));
         
         TransactionOperation transaction;
         QueryOperation truncate = new QueryOperation(new Query("truncate table " + tableName));
